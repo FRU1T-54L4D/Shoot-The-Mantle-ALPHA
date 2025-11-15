@@ -1,3 +1,6 @@
+namespace SpriteKind {
+    export const NPC = SpriteKind.create()
+}
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     shotDir = 1
     animation.runImageAnimation(
@@ -6,6 +9,9 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     100,
     true
     )
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.NPC, function (sprite, otherSprite) {
+    sprites.destroy(otherSprite, effects.smiles, 10)
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (shotDir == 1) {
@@ -27,18 +33,28 @@ info.onScore(15, function () {
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     shotDir = 3
-    mySprite.setImage(assets.image`MC Side Left`)
+    animation.runImageAnimation(
+    mySprite,
+    assets.animation`MC Side Left Anim`,
+    100,
+    true
+    )
 })
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (sprite, otherSprite) {
     info.changeScoreBy(1)
-    sprites.destroy(sprite, effects.fire, 100)
+    sprites.destroy(sprite, effects.fire, 75)
 })
 statusbars.onZero(StatusBarKind.Health, function (status) {
     game.gameOver(false)
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     shotDir = 4
-    mySprite.setImage(assets.image`MC Side Right`)
+    animation.runImageAnimation(
+    mySprite,
+    assets.animation`MC Side Right Anim`,
+    100,
+    true
+    )
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     shotDir = 2
@@ -52,6 +68,7 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
 let myEnemy: Sprite = null
 let projectile: Sprite = null
 let shotDir = 0
+let DS_NPC: Sprite = null
 let mySprite: Sprite = null
 mySprite = sprites.create(assets.image`MC Front`, SpriteKind.Player)
 let statusbar = statusbars.create(17, 3, StatusBarKind.Health)
@@ -63,15 +80,18 @@ tiles.setCurrentTilemap(tilemap`level1`)
 scene.cameraFollowSprite(mySprite)
 tiles.placeOnTile(mySprite, tiles.getTileLocation(0, 0))
 music.play(music.createSong(assets.song`falling-blossoms`), music.PlaybackMode.LoopingInBackground)
+if (Math.percentChance(5)) {
+    DS_NPC = sprites.create(assets.image`NPC`, SpriteKind.NPC)
+    tiles.placeOnRandomTile(DS_NPC, sprites.castle.tilePath5)
+}
 game.onUpdate(function () {
-    if (mySprite.overlapsWith(myEnemy)) {
-        statusbar.value += -1
+    if (mySprite.vx + mySprite.vy == 0) {
+        mySprite.setImage(assets.image`MC Front`)
     }
 })
 game.onUpdate(function () {
-    if (mySprite.vx + mySprite.vy == 0) {
-        animation.stopAnimation(animation.AnimationTypes.All, mySprite)
-        mySprite.setImage(assets.image`MC Front`)
+    if (mySprite.overlapsWith(myEnemy)) {
+        statusbar.value += -2
     }
 })
 game.onUpdateInterval(3000, function () {
