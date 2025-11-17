@@ -1,5 +1,5 @@
 namespace SpriteKind {
-    export const NPC = SpriteKind.create()
+    export const FR13ND = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     shotDir = 1
@@ -9,9 +9,6 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     100,
     true
     )
-})
-sprites.onOverlap(SpriteKind.Player, SpriteKind.NPC, function (sprite, otherSprite) {
-    sprites.destroy(otherSprite, effects.smiles, 10)
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (shotDir == 1) {
@@ -65,6 +62,9 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     true
     )
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.FR13ND, function (sprite, otherSprite) {
+    sprites.destroy(otherSprite, effects.smiles, 10)
+})
 let myEnemy: Sprite = null
 let projectile: Sprite = null
 let shotDir = 0
@@ -81,7 +81,7 @@ scene.cameraFollowSprite(mySprite)
 tiles.placeOnTile(mySprite, tiles.getTileLocation(0, 0))
 music.play(music.createSong(assets.song`falling-blossoms`), music.PlaybackMode.LoopingInBackground)
 if (Math.percentChance(5)) {
-    DS_NPC = sprites.create(assets.image`NPC`, SpriteKind.NPC)
+    DS_NPC = sprites.create(assets.image`NPC`, SpriteKind.FR13ND)
     tiles.placeOnRandomTile(DS_NPC, sprites.castle.tilePath5)
 }
 game.onUpdate(function () {
